@@ -1,4 +1,4 @@
-GET http://localhost:3001/api/persons/2
+GET http://localhost:3001/api/persons/54
 
 ###
 DELETE http://localhost:3001/api/persons/2
@@ -9,6 +9,5 @@ Content-Type: application/json
 
 {
     "name": "sample",
-    "number": "sampleNUmber",
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+    "number": "sampleNUmber"
 }

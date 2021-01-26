@@ -1,11 +1,13 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
 
+morgan.token('text', function (req,res) { return JSON.stringify(req.body) })
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :text'))
+
 const getRandomInt = () => Math.floor(Math.random() * Math.floor(9999))
-
-
 
 let persons = [
       {
@@ -30,7 +32,6 @@ let persons = [
       }
     ]
 
-  console.log(persons.length)
 const info = () => {
     return (
         `Phonebook has info for ${persons.length} people
@@ -38,12 +39,13 @@ ${new Date()}`
     )
 }
 
-const alreadyIncluded = person => {
-    if (persons.find(p => p.name.toLowerCase() === person.toLowerCase())) {
-        return true
-    }
-    return false
-}
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+  
+
+
+const alreadyIncluded = person => persons.find(p => p.name.toLowerCase() === person.toLowerCase())
 
 app.get('/info', (request,response) => {
     response.send(info())
@@ -94,10 +96,13 @@ app.post('/api/persons', (request,response) => {
         id:getRandomInt()
     }
     
-    console.log(newPerson)
     persons = persons.concat(newPerson)
     response.json(newPerson)
 })
+
+app.use(unknownEndpoint)
+
+
 
 const PORT = 3001
 app.listen(PORT, () => {
