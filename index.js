@@ -1,6 +1,11 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
+const getRandomInt = () => Math.floor(Math.random() * Math.floor(9999))
+
+
 
 let persons = [
       {
@@ -26,11 +31,18 @@ let persons = [
     ]
 
   console.log(persons.length)
-  const info = () => {
+const info = () => {
     return (
         `Phonebook has info for ${persons.length} people
 ${new Date()}`   
     )
+}
+
+const alreadyIncluded = person => {
+    if (persons.find(p => p.name.toLowerCase() === person.toLowerCase())) {
+        return true
+    }
+    return false
 }
 
 app.get('/info', (request,response) => {
@@ -54,6 +66,37 @@ app.get('/api/persons/:id', (request,response) => {
     } else {
         response.status(404).end()
     }
+})
+
+app.delete('/api/persons/:id',(request,response) => {
+    const id = Number(request.params.id)
+    persons = persons.filter(person => person.id !== id)
+
+    response.status(204).end()
+})
+
+app.post('/api/persons', (request,response) => {
+    const body = request.body
+
+    if (!body.name || !body.number) {
+        return response.status(400).json({
+            error: 'content missing'
+        })
+    } else if (alreadyIncluded(body.name)) {
+        return response.status(400).json({
+            error: 'person already exists'
+        })
+    }
+
+    const newPerson = {
+        name:body.name,
+        number:body.number,
+        id:getRandomInt()
+    }
+    
+    console.log(newPerson)
+    persons = persons.concat(newPerson)
+    response.json(newPerson)
 })
 
 const PORT = 3001
