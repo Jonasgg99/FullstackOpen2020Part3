@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build:ui": "rm -rf build && cd C:/Users/Jonas/Documents/GitHub/FullstackOpen2020Submissions/part2/phonebook && npm run build --prod && cp -r build A:/GitHub/FullstackOpen2020Part3",
+    "deploy": "git push heroku main",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy"
   },
   "repository": {
     "type": "git",
