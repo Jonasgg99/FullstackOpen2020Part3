@@ -5,6 +5,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static('build'))
 
 morgan.token('text', function (req,res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :text :date[web]'))
@@ -51,10 +52,6 @@ const alreadyIncluded = person => persons.find(p => p.name.toLowerCase() === per
 
 app.get('/info', (request,response) => {
     response.send(info())
-})
-
-app.get('/', (request,response) => {
-    response.send('root')
 })
 
 app.get('/api/persons', (request,response) => {
