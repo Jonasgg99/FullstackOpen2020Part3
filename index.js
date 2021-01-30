@@ -15,29 +15,6 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :t
 
 const getRandomInt = () => Math.floor(Math.random() * Math.floor(9999))
 
-let persons = [
-      {
-        "name": "Arto Hellas",
-        "number": "040-123456",
-        "id": 1
-      },
-      {
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523",
-        "id": 2
-      },
-      {
-        "name": "Dan Abramov",
-        "number": "12-43-234345",
-        "id": 3
-      },
-      {
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122",
-        "id": 4
-      }
-    ]
-
 const info = number => {
     return (
         `Phonebook has info for ${number} people
@@ -48,10 +25,6 @@ ${new Date()}`
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
   }
-  
-
-
-const alreadyIncluded = person => persons.find(p => p.name.toLowerCase() === person.toLowerCase())
 
 app.get('/info', (request,response) => {
     Person.count().then(number => {
@@ -103,18 +76,8 @@ app.put('/api/persons/:id', (request,response,next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request,response) => {
+app.post('/api/persons', (request,response,next) => {
     const body = request.body
-
-    if (!body.name || !body.number) {
-        return response.status(400).json({
-            error: 'content missing'
-        })
-    } else if (alreadyIncluded(body.name)) {
-        return response.status(400).json({
-            error: 'person already exists'
-        })
-    }
 
     const newPerson = new Person({
         name:body.name,
@@ -123,8 +86,8 @@ app.post('/api/persons', (request,response) => {
     
     newPerson.save().then(savedPerson => {
         response.json(savedPerson)
-        /*persons = persons.concat(newPerson)*/
     })
+    .catch(error => next(error))
     
 })
 
@@ -132,10 +95,13 @@ app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
+    console.log(error.name)
   
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
-    } 
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).send({ error: error.message })
+    }
   
     next(error)
   }
