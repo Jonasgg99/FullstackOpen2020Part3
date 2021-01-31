@@ -9,7 +9,8 @@
     "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd C:/Users/Jonas/Documents/GitHub/FullstackOpen2020Submissions/part2/phonebook && npm run build --prod && cp -r build A:/GitHub/FullstackOpen2020Part3",
     "deploy": "git push heroku main",
-    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy"
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,12 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "nodemon": "^2.0.7"
   }
 }
