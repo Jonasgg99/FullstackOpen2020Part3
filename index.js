@@ -54,7 +54,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 });
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
+  const { body } = request;
 
   const updatedPerson = {
     name: body.name,
@@ -69,7 +69,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 });
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body
+  const { body } = request;
 
   const newPerson = new Person({
     name: body.name,
@@ -86,11 +86,11 @@ app.use(unknownEndpoint);
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
-  console.log(error.name);
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' });
-  } else if (error.name === 'ValidationError') {
+  }
+  if (error.name === 'ValidationError') {
     return response.status(400).send({ error: error.message })
   }
 
